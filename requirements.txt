@@ -1,0 +1,13 @@
+click==8.1.1
+Flask==2.0.3
+Flask-RESTful==0.3.9
+Flask-JWT==0.2.0
+Flask-JWT-Extended==4.6.0
+itsdangerous==2.1.2
+Jinja2==3.1.1
+MarkupSafe==2.1.1
+Werkzeug==2.1.0
+SQLAlchemy==1.4.15
+Flask-SQLAlchemy==2.5.1
+psycopg2-binary==2.9.9
+PyJWT==2.1.0

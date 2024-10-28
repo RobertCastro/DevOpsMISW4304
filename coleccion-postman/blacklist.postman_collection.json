@@ -1,0 +1,669 @@
+{
+	"info": {
+		"_postman_id": "b35126b1-fa54-4b4a-8028-9047d281c123",
+		"name": "blacklist",
+		"description": "Esta colección tiene varios escenarios de prueba del servicio black-list implementado con los respectivos ejemplos de cada escenario.\n\nEsta colección fue desarrollada por el grupo de trabajo #9 Compumundohipermegared.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1812580",
+		"_collection_link": "https://www.postman.com/workspace/202415-devops-grupo9-compumundo~a93d5234-8470-47d5-a4d7-b382c6e7fcac/collection/1812580-b35126b1-fa54-4b4a-8028-9047d281c123?action=share&source=collection_link&creator=1812580"
+	},
+	"item": [
+		{
+			"name": "ping",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}",
+					"host": [
+						"{{host}}"
+					]
+				},
+				"description": "Este escenario evidencia como revisar que el servicio está disponible a través de un endpoint."
+			},
+			"response": [
+				{
+					"name": "ejemplo ping",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://blacklist-env.eba-yhgekzda.us-east-1.elasticbeanstalk.com",
+							"protocol": "http",
+							"host": [
+								"blacklist-env",
+								"eba-yhgekzda",
+								"us-east-1",
+								"elasticbeanstalk",
+								"com"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 19 Oct 2024 15:35:31 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "73"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Server",
+							"value": "nginx"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Microservicio de lista negra de emails!\",\n    \"status\": \"success\"\n}"
+				}
+			]
+		},
+		{
+			"name": "agregar email sin token",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Function to generate a random string\r",
+							"function generateRandomString(length) {\r",
+							"    let chars = 'abcdefghijklmnopqrstuvwxyz1234567890';\r",
+							"    let randomString = '';\r",
+							"    for (let i = 0; i < length; i++) {\r",
+							"        let randomIndex = Math.floor(Math.random() * chars.length);\r",
+							"        randomString += chars[randomIndex];\r",
+							"    }\r",
+							"    return randomString;\r",
+							"}\r",
+							"\r",
+							"// Generate a random email address\r",
+							"let randomEmail = generateRandomString(8) + '@example.com';\r",
+							"\r",
+							"// Set the email as an environment variable\r",
+							"pm.environment.set(\"randomEmail\", randomEmail);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{randomEmail}}\",\r\n    \"app_uuid\": \"123e4567-e89b-12d3-a456-426614174000\",\r\n    \"blocked_reason\": \"Spamming\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/blacklists",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"blacklists"
+					]
+				},
+				"description": "Este escenario muestra la respuesta esperada cuando se intenta agregar un email sin token."
+			},
+			"response": [
+				{
+					"name": "ejemplo agregar email sin token",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"\",\r\n    \"app_uuid\": \"123e4567-e89b-12d3-a456-426614174000\",\r\n    \"blocked_reason\": \"Spamming\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://blacklist-env.eba-yhgekzda.us-east-1.elasticbeanstalk.com/blacklists",
+							"protocol": "http",
+							"host": [
+								"blacklist-env",
+								"eba-yhgekzda",
+								"us-east-1",
+								"elasticbeanstalk",
+								"com"
+							],
+							"path": [
+								"blacklists"
+							]
+						}
+					},
+					"status": "UNAUTHORIZED",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 19 Oct 2024 15:56:34 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "33"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Server",
+							"value": "nginx"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Token is missing!\"\n}"
+				}
+			]
+		},
+		{
+			"name": "agregar email token incorrecto",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Function to generate a random string\r",
+							"function generateRandomString(length) {\r",
+							"    let chars = 'abcdefghijklmnopqrstuvwxyz1234567890';\r",
+							"    let randomString = '';\r",
+							"    for (let i = 0; i < length; i++) {\r",
+							"        let randomIndex = Math.floor(Math.random() * chars.length);\r",
+							"        randomString += chars[randomIndex];\r",
+							"    }\r",
+							"    return randomString;\r",
+							"}\r",
+							"\r",
+							"// Generate a random email address\r",
+							"let randomEmail = generateRandomString(8) + '@example.com';\r",
+							"\r",
+							"// Set the email as an environment variable\r",
+							"pm.environment.set(\"randomEmail\", randomEmail);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{tokenincorrecto}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{randomEmail}}\",\r\n    \"app_uuid\": \"123e4567-e89b-12d3-a456-426614174000\",\r\n    \"blocked_reason\": \"Spamming\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/blacklists",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"blacklists"
+					]
+				},
+				"description": "Este escenario muestra la respuesta esperada cuando se intenta agregar un email con token incorrecto."
+			},
+			"response": [
+				{
+					"name": "ejemplo agregar email token incorrecto",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"\",\r\n    \"app_uuid\": \"123e4567-e89b-12d3-a456-426614174000\",\r\n    \"blocked_reason\": \"Spamming\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://blacklist-env.eba-yhgekzda.us-east-1.elasticbeanstalk.com/blacklists",
+							"protocol": "http",
+							"host": [
+								"blacklist-env",
+								"eba-yhgekzda",
+								"us-east-1",
+								"elasticbeanstalk",
+								"com"
+							],
+							"path": [
+								"blacklists"
+							]
+						}
+					},
+					"status": "UNAUTHORIZED",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 19 Oct 2024 15:59:44 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "30"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Server",
+							"value": "nginx"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Invalid token!\"\n}"
+				}
+			]
+		},
+		{
+			"name": "agregar email nuevo con token",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Function to generate a random string\r",
+							"function generateRandomString(length) {\r",
+							"    let chars = 'abcdefghijklmnopqrstuvwxyz1234567890';\r",
+							"    let randomString = '';\r",
+							"    for (let i = 0; i < length; i++) {\r",
+							"        let randomIndex = Math.floor(Math.random() * chars.length);\r",
+							"        randomString += chars[randomIndex];\r",
+							"    }\r",
+							"    return randomString;\r",
+							"}\r",
+							"\r",
+							"// Generate a random email address\r",
+							"let randomEmail = generateRandomString(8) + '@example.com';\r",
+							"\r",
+							"// Set the email as an environment variable\r",
+							"pm.environment.set(\"randomEmail\", randomEmail);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{randomEmail}}\",\r\n    \"app_uuid\": \"123e4567-e89b-12d3-a456-426614174000\",\r\n    \"blocked_reason\": \"Spamming\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/blacklists",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"blacklists"
+					]
+				},
+				"description": "Este escenario muestra la respuesta esperada cuando se intenta agregar un email nuevo con el token correcto."
+			},
+			"response": [
+				{
+					"name": "ejemplo agregar email nuevo con token",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"\",\r\n    \"app_uuid\": \"123e4567-e89b-12d3-a456-426614174000\",\r\n    \"blocked_reason\": \"Spamming\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://blacklist-env.eba-yhgekzda.us-east-1.elasticbeanstalk.com/blacklists",
+							"protocol": "http",
+							"host": [
+								"blacklist-env",
+								"eba-yhgekzda",
+								"us-east-1",
+								"elasticbeanstalk",
+								"com"
+							],
+							"path": [
+								"blacklists"
+							]
+						}
+					},
+					"status": "CREATED",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 19 Oct 2024 16:01:07 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "54"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Server",
+							"value": "nginx"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"El email fue agregado a la lista negra\"\n}"
+				}
+			]
+		},
+		{
+			"name": "obtener email",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/blacklists/{{randomEmail}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"blacklists",
+						"{{randomEmail}}"
+					]
+				},
+				"description": "Este escenario muestra la respuesta esperada cuando se intenta obtener información de un email ya creado y teniendo el token correctamente en el request."
+			},
+			"response": [
+				{
+					"name": "ejemplo obtener email",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://blacklist-env.eba-yhgekzda.us-east-1.elasticbeanstalk.com/blacklists/",
+							"protocol": "http",
+							"host": [
+								"blacklist-env",
+								"eba-yhgekzda",
+								"us-east-1",
+								"elasticbeanstalk",
+								"com"
+							],
+							"path": [
+								"blacklists",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 19 Oct 2024 16:03:01 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "118"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Server",
+							"value": "nginx"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"email\": \"8jz9crmy@example.com\",\n    \"blocked\": true,\n    \"blocked_reason\": \"Spamming\",\n    \"created_at\": \"2024-10-19 16:02:05\"\n}"
+				}
+			]
+		},
+		{
+			"name": "agregar email duplicado con token",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{randomEmail}}\",\r\n    \"app_uuid\": \"123e4567-e89b-12d3-a456-426614174000\",\r\n    \"blocked_reason\": \"Spamming\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/blacklists",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"blacklists"
+					]
+				},
+				"description": "Este escenario muestra la respuesta esperada cuando se intenta agregar un email ya existente con el token correcto."
+			},
+			"response": [
+				{
+					"name": "ejemplo agregar email duplicado con token",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"\",\r\n    \"app_uuid\": \"123e4567-e89b-12d3-a456-426614174000\",\r\n    \"blocked_reason\": \"Spamming\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://blacklist-env.eba-yhgekzda.us-east-1.elasticbeanstalk.com/blacklists",
+							"protocol": "http",
+							"host": [
+								"blacklist-env",
+								"eba-yhgekzda",
+								"us-east-1",
+								"elasticbeanstalk",
+								"com"
+							],
+							"path": [
+								"blacklists"
+							]
+						}
+					},
+					"status": "BAD REQUEST",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 19 Oct 2024 16:04:07 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "53"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Server",
+							"value": "nginx"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"El email ya está en la lista negra\"\n}"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "http://localhost:5001",
+			"type": "default"
+		},
+		{
+			"value": "",
+			"type": "string",
+			"disabled": true
+		}
+	]
+}
