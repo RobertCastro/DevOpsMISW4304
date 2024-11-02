@@ -99,3 +99,10 @@ Los requests necesitan un token el cual es estatico por ahora y seria:
 ```
 eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.e30.3J-lwqipiMTiRzWCEjuey3v-n7pjDTBV1FZBpHx6plI
 ```
+
+## Ejecutar Tests
+
+``` bash
+export FLASK_ENV=testing
+pytest tests/
+```

@@ -1,0 +1,29 @@
+{
+    "name": "compumundo-black-list-CI",
+    "source": {
+        "type": "GITHUB",
+        "location": "https://github.com/DaGamez/202415-devops-grupo9-compumundohipermegared.git",
+        "buildspec": "buildspecCI.yml",
+        "gitCloneDepth": 1,
+        "gitSubmodulesConfig": {
+            "fetchSubmodules": false
+        },
+        "reportBuildStatus": false,
+        "auth": {
+            "type": "OAUTH",
+            "resource": "arn:aws:secretsmanager:us-west-2:061039766984:secret:token-github-devops-xNtSDh"
+        }
+    },
+    "sourceVersion": "develop",
+    "artifacts": {
+        "type": "S3",
+        "location": "compumundo-black-list-s3"
+    },
+    "environment": {
+        "type": "LINUX_CONTAINER",
+        "image": "aws/codebuild/standard:5.0",
+        "computeType": "BUILD_GENERAL1_SMALL"
+    },
+    "serviceRole": "arn:aws:iam::061039766984:role/service-role/codebuild-devops_grupo09-service-role",
+    "timeoutInMinutes": 5
+}

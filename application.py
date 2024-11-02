@@ -7,19 +7,24 @@ from flask_jwt_extended import JWTManager
 
 application = Flask(__name__)
 
-db_user = os.getenv('RDS_USERNAME', 'postgres')
-db_password = os.getenv('RDS_PASSWORD', 'postgres')
-db_host = os.getenv('RDS_HOSTNAME', 'localhost')
-db_name = os.getenv('RDS_DB_NAME', 'postgres')
-db_port = os.getenv('RDS_PORT', '5432')
+is_testing = os.getenv('FLASK_ENV') == 'testing'
 
-application.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
+if is_testing:
+    application.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+else:
+    db_user = os.getenv('RDS_USERNAME', 'postgres')
+    db_password = os.getenv('RDS_PASSWORD', 'postgres')
+    db_host = os.getenv('RDS_HOSTNAME', 'localhost')
+    db_name = os.getenv('RDS_DB_NAME', 'postgres')
+    db_port = os.getenv('RDS_PORT', '5432')
+    application.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
+
+
 application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db.init_app(application)
-
 application.config["JWT_SECRET_KEY"] = 'compumundo_hiper_mega_red'
 application.config['JWT_TOKEN_LOCATION'] = ['headers']
+
+db.init_app(application)
 jwt = JWTManager(application)
 
 # Crear las tablas en la base de datos

@@ -1,0 +1,13 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - pip install -r requirements.txt
+  build:
+    commands:
+      - export FLASK_ENV=testing
+      - pytest tests/
+artifacts:
+  files:
+    - '**/*'

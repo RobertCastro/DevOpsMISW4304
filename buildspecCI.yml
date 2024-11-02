@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - pip install -r requirements.txt
+      - touch text.txt
+  build:
+    commands:
+      - export FLASK_ENV=testing
+      - pytest tests/
+      - docker build -t compumundo-black-list-ci-container-image .
+  post_build:
+    commands:
+      # Save the Docker image as a tar file
+      - docker save compumundo-black-list-ci-container-image:latest -o docker-image.tar
+      - gzip docker-image.tar
+
+artifacts:
+  files:
+    - docker-image.tar.gz
+  name: docker-image-$(date +%Y-%m-%d_%H-%M)
