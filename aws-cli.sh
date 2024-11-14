@@ -38,8 +38,11 @@ aws s3api delete-bucket --bucket compumundo-black-list-s3 --region us-west-2
 # idea es que construya una imagen de contenedor en un S3
 aws codebuild create-project --cli-input-json file://create-aws-code-build-project.json
 
-#añadir webook2
-aws codebuild create-webhook --project-name compumundo-black-list-CI --filter-groups "[[{\"type\":\"EVENT\",\"pattern\":\"PUSH\"},{\"type\":\"HEAD_REF\",\"pattern\":\"^refs/heads/develop$\"}]]"
+#añadir webook
+aws codebuild create-webhook --project-name compumundo-black-list-CI --filter-groups "[[{\"type\":\"EVENT\",\"pattern\":\"PUSH\"},{\"type\":\"HEAD_REF\",\"pattern\":\"^refs/heads/main$\"}]]"
+
+#borrar webhook
+aws codebuild delete-webhook --project-name compumundo-black-list-CI
 
 #listar codebuild projects
 aws codebuild list-projects --output table
@@ -47,7 +50,7 @@ aws codebuild list-projects --output table
 #get project details
 aws codebuild batch-get-projects --names "compumundo-black-list-CI"
 
-#comenzar build del proyecto
+#comenzar build del proyecto  
 aws codebuild start-build --project-name "compumundo-black-list-CI"
 
 #build status con id del build del anterior paso
@@ -56,3 +59,19 @@ aws codebuild batch-get-builds --ids "compumundo-black-list-CI:<id>"
 #delete codebuild project
 aws codebuild delete-project --name "compumundo-black-list-CI"
 
+#create elastic beanstalk application using a .tar.gz file
+aws elasticbeanstalk create-application \
+    --application-name "compumundo-black-list-CLI" \
+    --region us-west-2
+
+aws elasticbeanstalk create-application-version \
+    --application-name "compumundo-black-list-CLI" \
+    --version-label "v1" \
+    --source-bundle S3Bucket="compumundo-black-list-s3",S3Key="compumundo-black-list-CI/docker-image.tar.gz" \
+    --region us-west-2
+
+#list elastic beanstalk applications
+aws elasticbeanstalk describe-applications --output table
+
+#delete elastic beanstalk application
+aws elasticbeanstalk delete-application --application-name "compumundo-black-list-CLI" --region us-west-2

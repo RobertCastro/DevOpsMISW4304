@@ -115,5 +115,5 @@ def test_authentication_invalid_token(client):
         'blocked_reason': 'spam'
     }
     response = client.post('/blacklists', data=json.dumps(data), headers=headers, content_type='application/json')
-    assert response.status_code == 401
+    assert response.status_code == 401  #401
     assert response.json['message'] == 'Invalid token!'

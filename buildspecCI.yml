@@ -2,21 +2,29 @@ version: 0.2
 
 phases:
   pre_build:
+    on-failure: ABORT
     commands:
       - pip install -r requirements.txt
-      - touch text.txt
+      
   build:
+    on-failure: ABORT
     commands:
       - export FLASK_ENV=testing
+      - set -e # exit on error1
       - pytest tests/
-      - docker build -t compumundo-black-list-ci-container-image .
+      
   post_build:
+    on-failure: ABORT
     commands:
       # Save the Docker image as a tar file
-      - docker save compumundo-black-list-ci-container-image:latest -o docker-image.tar
-      - gzip docker-image.tar
+      #- docker build -t compumundo-black-list-ci-container-image .
+      #- docker save compumundo-black-list-ci-container-image:latest -o docker-image.tar
+      #- gzip docker-image.tar
+      #create a zip file with the contents of the current directory
+      - zip -r app.zip .
 
 artifacts:
   files:
-    - docker-image.tar.gz
+    #- docker-image.tar.gz
+    - app.zip
   name: docker-image-$(date +%Y-%m-%d_%H-%M)

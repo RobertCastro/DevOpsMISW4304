@@ -106,3 +106,9 @@ eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.e30.3J-lwqipiMTiRzWCEjuey3v-n7pjDTBV1FZBpHx
 export FLASK_ENV=testing
 pytest tests/
 ```
+
+
+test ci/cd 1
+test ci/cd 2
+
+
