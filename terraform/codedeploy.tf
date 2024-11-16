@@ -44,6 +44,10 @@ resource "aws_codedeploy_deployment_group" "ecs_deployment_group" {
       target_group {
         name = aws_lb_target_group.target_group_2.name
       }
+
+      test_traffic_route {
+        listener_arns = [aws_lb_listener.listener_test.arn]
+      }
     }
   }
 }

@@ -3,7 +3,4 @@ env
 *.zip
 __pycache__
 terraform/.terraform/providers/*
-terraform/.terraform.lock.hcl
-terraform/terraform.tfstate.backup
 terraform/plan.tfplan
-terraform/terraform.tfstate

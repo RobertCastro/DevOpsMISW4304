@@ -45,7 +45,15 @@ phases:
   post_build:
     commands:
       - docker push $ECR_REPOSITORY_URI:latest
+      - printf '{"executionRoleArn":"arn:aws:iam::061039766984:role/ecs-execution-role","family":"python-app-task","requiresCompatibilities":["FARGATE"],"networkMode":"awsvpc","cpu":"1024","memory":"3072","containerDefinitions":[{"name":"Container-app-python","image":"%s","essential":true,"portMappings":[{"containerPort":5000,"hostPort":5000,"protocol":"tcp"}],"logConfiguration":{"logDriver":"awslogs","options":{"awslogs-group":"/ecs/ContainerAppPythonLogs","awslogs-region":"us-west-2","awslogs-stream-prefix":"ContainerAppPythonLogs"}}}],"taskRoleArn":"arn:aws:iam::061039766984:role/ecs-task-role"}' $ECR_REPOSITORY_URI:latest > taskdef.json
+      - printf '{"version":1,"Resources":[{"TargetService":{"Type":"AWS::ECS::Service","Properties":{"TaskDefinition":"<TASK_DEFINITION>","LoadBalancerInfo":{"ContainerName":"Container-app-python","ContainerPort":5000}}}}]}' > appspec.yaml
+      - printf '[{"name":"Container-app-python","imageUri":"%s"}]' $ECR_REPOSITORY_URI:latest > imagedefinitions.json
       - echo 'Image has been pushed to ECR'
+artifacts:
+  files:
+    - taskdef.json
+    - appspec.yaml
+    - imagedefinitions.json
 EOT
   }
 }

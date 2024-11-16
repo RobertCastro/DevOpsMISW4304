@@ -62,7 +62,9 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
           "s3:GetObjectVersion",
           "s3:GetBucketVersioning",
           "s3:PutObject",
-          "s3:ListBucket"
+          "s3:ListBucket",
+          "s3:PutObjectAcl",           
+          "s3:GetObjectAcl"
         ]
         Resource = [
           aws_s3_bucket.artifact_store.arn,
@@ -74,6 +76,20 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
         Action = [
           "codebuild:BatchGetBuilds",
           "codebuild:StartBuild"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "codedeploy:CreateDeployment",
+          "codedeploy:GetDeployment",
+          "codedeploy:GetDeploymentConfig",
+          "codedeploy:GetApplicationRevision",
+          "codedeploy:RegisterApplicationRevision",
+          "codedeploy:GetApplication",
+          "ecs:RegisterTaskDefinition",
+          "iam:PassRole"
         ]
         Resource = "*"
       }
@@ -109,10 +125,12 @@ resource "aws_iam_role_policy" "codebuild_policy" {
             "Effect": "Allow",
             "Action": [
                 "s3:GetObject",
-                "s3:GetObjectVersion"
+                "s3:GetObjectVersion",
+                "s3:PutObject",
+                "s3:ListBucket"
             ],
             "Resource": [
-                "arn:aws:s3:::python-app-pipeline-artifacts/*"
+                "${aws_s3_bucket.artifact_store.arn}/*",
         ]
       },
       {

@@ -36,10 +36,33 @@ resource "aws_codepipeline" "ecr_pipeline" {
       owner           = "AWS"
       provider        = "CodeBuild"
       input_artifacts = ["source_output"]
+      output_artifacts = ["build_output"]
       version         = "1"
 
       configuration = {
         ProjectName = aws_codebuild_project.docker_build_project.name
+      }
+    }
+  }
+
+  stage {
+    name = "Deploy"
+
+    action {
+      name            = "Deploy_to_ECS"
+      category        = "Deploy"
+      owner           = "AWS"
+      provider        = "CodeDeployToECS"
+      input_artifacts = ["build_output"]
+      version         = "1"
+
+      configuration = {
+        ApplicationName                = aws_codedeploy_app.ecs_app.name
+        DeploymentGroupName           = aws_codedeploy_deployment_group.ecs_deployment_group.deployment_group_name
+        TaskDefinitionTemplateArtifact = "build_output"
+        TaskDefinitionTemplatePath    = "taskdef.json"
+        AppSpecTemplateArtifact       = "build_output"
+        AppSpecTemplatePath          = "appspec.yaml"
       }
     }
   }

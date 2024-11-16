@@ -30,7 +30,7 @@ resource "aws_ecs_task_definition" "app_task" {
         },
         {
           name  = "RDS_HOSTNAME"
-          value = aws_db_instance.postgres.endpoint
+          value = split(":", aws_db_instance.postgres.endpoint)[0]  # Only take the hostname part
         },
         {
           name  = "RDS_PORT"

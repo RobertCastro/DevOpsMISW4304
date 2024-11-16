@@ -1,6 +1,7 @@
 resource "aws_ecr_repository" "python_app" {
   name                 = "python_app"
   image_tag_mutability = "MUTABLE"
+  force_delete = true
 
   image_scanning_configuration {
     scan_on_push = true
@@ -8,6 +9,10 @@ resource "aws_ecr_repository" "python_app" {
 
   tags = {
     Name = "Python App Repository"
+  }
+
+  lifecycle {
+    prevent_destroy = false  # Allow the resource to be destroyed
   }
 }
 
