@@ -2,5 +2,19 @@
 env
 *.zip
 __pycache__
+
+# ignore files for CDK project
+*.swp
+package-lock.json
+__pycache__
+.pytest_cache
+.venv
+*.egg-info
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
 terraform/.terraform/providers/*
 terraform/plan.tfplan
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup

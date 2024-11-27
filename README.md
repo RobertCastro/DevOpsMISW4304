@@ -30,6 +30,13 @@ Descripción de los archivos y carpetas:
 Esta estructura está pensada para facilitar el despliegue en Elastic Beanstalk, además de organizar adecuadamente el código.
 
 
+## Entrega 3 Ejecucion con Terraform
+Pasos:
+- Ir al folder de terraform
+- Ejecutar ```terraform init```
+- Ejecutar ```terraform plan```
+- Ejecutar ```terraform apply```
+
 ## Despliegue manual en Elastic Beanstalk
 
 - Comprimir en un zip: /app application.py requirements.txt .ebextensions
@@ -89,7 +96,7 @@ docker push 061039766984.dkr.ecr.us-east-2.amazonaws.com/blacklistservice:latest
 ``` bash
  docker build -t blacklist_app .
  docker run -d -p 5000:5000 --name flask_app blacklist_app
-
+ docker run -d -p 5000:5000 -e FLASK_ENV=testing --name flask_app blacklist_app 
 ```
 
 ### Token necesario en los requests
@@ -110,6 +117,5 @@ pytest tests/
 
 test ci/cd 1
 test ci/cd 2
-test ci/cd 3
 
 

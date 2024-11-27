@@ -15,3 +15,15 @@ ENV RDS_PORT=5432
 ENV FLASK_PORT=5000
 
 CMD python3 application.py --port $FLASK_PORT
+
+##Confguración New Relic
+RUN pip install newrelic
+ENV NEW_RELIC_APP_NAME="docker-flask-app-prod"
+ENV NEW_RELIC_LOG=stdout
+ENV NEW_RELIC_DISTRIBUTED_TRACING_ENABLED=true
+#INGEST_License
+ENV NEW_RELIC_LICENSE_KEY=dcff61889f2dbca6013ef6954825e6fdFFFFNRAL
+ENV NEW_RELIC_LOG_LEVEL=info
+# etc.
+
+ENTRYPOINT ["newrelic-admin", "run-program"]
